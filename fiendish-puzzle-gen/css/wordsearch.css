@@ -1,0 +1,419 @@
+/* =============================================
+   Fiendish Puzzle Gen — Word Search Tool Styles
+   ============================================= */
+
+/* ---- Page Layout ---- */
+.ws-layout {
+    max-width: 860px;
+    margin: 0 auto;
+}
+
+/* ---- Controls Panel ---- */
+.controls-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    margin-bottom: var(--space-xl);
+}
+
+/* ---- Input Area ---- */
+.input-area {
+    margin-bottom: var(--space-lg);
+}
+
+.input-row {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.input-row .form-input {
+    flex: 1;
+}
+
+.btn-add {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: var(--gradient-fiendish);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--duration-normal) var(--ease-out);
+    flex-shrink: 0;
+}
+
+.btn-add:hover {
+    box-shadow: 0 4px 16px rgba(230, 57, 70, 0.3);
+    transform: translateY(-1px);
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-sm);
+}
+
+/* ---- Word Tags ---- */
+.word-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    min-height: 8px;
+}
+
+.word-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 8px 5px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+    animation: tagPop 0.25s var(--ease-spring) both;
+}
+
+.word-tag.hex-tag {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: rgba(245, 158, 11, 0.2);
+    color: var(--accent-tertiary);
+}
+
+@keyframes tagPop {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.word-tag button {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: 50%;
+    color: var(--text-muted);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    line-height: 1;
+}
+
+.word-tag button:hover {
+    background: var(--accent-primary);
+    color: #fff;
+}
+
+/* ---- Toggle Row ---- */
+.toggle-row {
+    padding: var(--space-md);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-lg);
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.toggle-row.active {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: rgba(245, 158, 11, 0.05);
+}
+
+/* ---- Options Row ---- */
+.options-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---- Action Buttons ---- */
+.action-buttons {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+/* ---- Puzzle Output ---- */
+.puzzle-output {
+    margin-bottom: var(--space-xl);
+}
+
+/* Grid container */
+.grid-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    margin-bottom: var(--space-lg);
+    overflow-x: auto;
+}
+
+.grid-section-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.grid-section-label .label-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.grid-section-label .label-dot--puzzle {
+    background: var(--accent-primary);
+}
+
+.grid-section-label .label-dot--answer {
+    background: var(--accent-success);
+}
+
+/* Puzzle table */
+.puzzle-grid {
+    border-collapse: separate;
+    border-spacing: 2px;
+    margin: 0 auto;
+}
+
+.puzzle-grid td {
+    width: 36px;
+    height: 36px;
+    text-align: center;
+    vertical-align: middle;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border-radius: 4px;
+    transition: background var(--duration-fast) var(--ease-out);
+    letter-spacing: 0;
+    user-select: none;
+}
+
+.puzzle-grid td:hover {
+    background: var(--bg-elevated);
+}
+
+/* Answer key highlights */
+.puzzle-grid td.answer-highlight {
+    background: rgba(230, 57, 70, 0.15);
+    color: var(--accent-primary);
+    border: 1px solid rgba(230, 57, 70, 0.25);
+}
+
+.puzzle-grid td.answer-filler {
+    color: var(--text-muted);
+    opacity: 0.4;
+}
+
+/* ---- Word Bank ---- */
+.word-bank {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+}
+
+.word-bank-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-md);
+}
+
+.word-bank-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+}
+
+.word-bank-list li {
+    padding: 4px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.5px;
+}
+
+/* ---- Answer Key Section ---- */
+.answer-key-section {
+    margin-top: var(--space-lg);
+}
+
+.answer-key-section .grid-container {
+    border-color: rgba(16, 185, 129, 0.15);
+}
+
+/* ---- Print Styles ---- */
+.print-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.print-title {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    color: var(--text-primary);
+}
+
+@media print {
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-size: 11pt;
+    }
+
+    .bg-pattern,
+    .site-header,
+    .controls-panel,
+    .site-footer,
+    .nav-back,
+    .action-buttons {
+        display: none !important;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    .puzzle-output {
+        display: block !important;
+    }
+
+    .grid-container,
+    .word-bank {
+        background: transparent !important;
+        border: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        padding: 10px 0 !important;
+        box-shadow: none !important;
+    }
+
+    .puzzle-grid td {
+        width: 28px;
+        height: 28px;
+        font-size: 11pt;
+        background: transparent !important;
+        color: #000 !important;
+        border: 1px solid #ccc;
+    }
+
+    .puzzle-grid td.answer-highlight {
+        background: #e0e0e0 !important;
+        color: #000 !important;
+        font-weight: 900;
+        border-color: #999;
+    }
+
+    .puzzle-grid td.answer-filler {
+        color: #bbb !important;
+        opacity: 1;
+    }
+
+    .grid-section-label {
+        color: #000 !important;
+        font-size: 10pt;
+    }
+
+    .grid-section-label .label-dot {
+        display: none;
+    }
+
+    .word-bank-title {
+        color: #000 !important;
+    }
+
+    .word-bank-list li {
+        background: transparent !important;
+        border: 1px solid #ccc;
+        color: #000 !important;
+    }
+
+    .print-title {
+        font-family: serif;
+        color: #000 !important;
+        font-size: 24pt;
+    }
+
+    .answer-key-section {
+        page-break-before: always;
+    }
+
+    .answer-key-section .print-header {
+        display: block !important;
+    }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .controls-panel {
+        padding: var(--space-lg);
+    }
+
+    .puzzle-grid td {
+        width: 28px;
+        height: 28px;
+        font-size: 0.72rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .options-row {
+        grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons .btn {
+        width: 100%;
+    }
+
+    .puzzle-grid td {
+        width: 22px;
+        height: 22px;
+        font-size: 0.62rem;
+    }
+}

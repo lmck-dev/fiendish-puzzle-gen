@@ -1,0 +1,589 @@
+/* =============================================
+   Fiendish Puzzle Gen — Language Translator Styles
+   ============================================= */
+
+/* ---- Page Layout ---- */
+.translator-layout {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ---- Language Selector ---- */
+.lang-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: var(--space-sm);
+    margin-bottom: var(--space-xl);
+}
+
+.lang-card {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-md) var(--space-md);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.lang-card:hover {
+    border-color: var(--border-hover);
+    background: var(--bg-card-hover);
+    transform: translateY(-2px);
+}
+
+.lang-card.active {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+    box-shadow: 0 0 20px rgba(230, 57, 70, 0.1);
+}
+
+.lang-card__icon {
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.lang-card__body {
+    min-width: 0;
+}
+
+.lang-card__name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.2;
+}
+
+.lang-card__universe {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ---- Language Info Bar ---- */
+.lang-info {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    padding: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    flex-wrap: wrap;
+}
+
+.lang-info__main {
+    flex: 1;
+    min-width: 200px;
+}
+
+.lang-info__title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.lang-info__native {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent-primary);
+    margin-bottom: var(--space-sm);
+}
+
+.lang-info__desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.lang-info__badge {
+    padding: 4px 12px;
+    background: var(--accent-secondary-dim);
+    color: var(--accent-secondary);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ---- Translation Workspace ---- */
+.trans-workspace {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+}
+
+.trans-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    display: flex;
+    flex-direction: column;
+}
+
+.trans-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+}
+
+.trans-panel__label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.trans-input-area {
+    width: 100%;
+    min-height: 140px;
+    padding: var(--space-md);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-normal) var(--ease-out);
+    flex: 1;
+}
+
+.trans-input-area:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-primary-dim);
+}
+
+.trans-input-area::placeholder {
+    color: var(--text-muted);
+}
+
+.trans-output-area {
+    width: 100%;
+    min-height: 140px;
+    padding: var(--space-md);
+    font-size: 0.95rem;
+    line-height: 1.8;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    flex: 1;
+    overflow-y: auto;
+    word-wrap: break-word;
+}
+
+/* ---- Translation Words ---- */
+.trans-word {
+    display: inline;
+    padding: 2px 0;
+    border-radius: 3px;
+    transition: background var(--duration-fast) var(--ease-out);
+    cursor: default;
+}
+
+.trans-found {
+    color: var(--accent-primary);
+    font-weight: 600;
+}
+
+.trans-found:hover {
+    background: var(--accent-primary-dim);
+}
+
+.trans-missing {
+    color: var(--text-muted);
+    font-style: italic;
+    text-decoration: underline;
+    text-decoration-color: rgba(245, 158, 11, 0.4);
+    text-decoration-style: wavy;
+    text-underline-offset: 3px;
+}
+
+.trans-punct {
+    color: var(--text-secondary);
+}
+
+.output-placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+/* ---- Direction Toggle ---- */
+.trans-dir-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.trans-dir-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.trans-dir-btn svg {
+    transition: transform var(--duration-normal) var(--ease-out);
+}
+
+.trans-dir-btn:hover svg {
+    transform: rotate(180deg);
+}
+
+/* ---- Action Buttons ---- */
+.trans-actions {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+/* ---- Stats Bar ---- */
+.trans-stats {
+    display: flex;
+    gap: var(--space-lg);
+    padding: var(--space-md) var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-xl);
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.stat-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.stat-item--translated .stat-value { color: var(--accent-success); }
+.stat-item--missing .stat-value { color: var(--accent-tertiary); }
+
+/* ---- Dictionary Browser ---- */
+.dict-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+}
+
+.dict-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.dict-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dict-count {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.dict-search-input {
+    width: 100%;
+    max-width: 280px;
+    padding: 8px 12px;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color var(--duration-normal) var(--ease-out);
+}
+
+.dict-search-input:focus {
+    border-color: var(--accent-primary);
+}
+
+.dict-search-input::placeholder {
+    color: var(--text-muted);
+}
+
+.dict-list {
+    max-height: 360px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-default) transparent;
+}
+
+.dict-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.dict-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dict-list::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 3px;
+}
+
+.dict-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--duration-fast) var(--ease-out);
+    font-size: 0.82rem;
+}
+
+.dict-row:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.dict-row:nth-child(even) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.dict-row:nth-child(even):hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dict-eng {
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 100px;
+}
+
+.dict-arrow {
+    color: var(--text-muted);
+    font-size: 0.7rem;
+    flex-shrink: 0;
+}
+
+.dict-trans {
+    color: var(--accent-primary);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* ---- Copy Button (reuse from cyphers) ---- */
+.btn-copy-trans {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.btn-copy-trans:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.btn-copy-trans.copied {
+    border-color: var(--accent-success);
+    color: var(--accent-success);
+}
+
+.btn-clear-trans {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+}
+
+.btn-clear-trans:hover {
+    color: var(--text-primary);
+}
+
+/* ---- Dictionary Manager ---- */
+.dict-manager {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px dashed var(--border-subtle);
+}
+
+.manager-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: var(--space-md);
+}
+
+.manager-toolbar {
+    display: flex;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.manager-panel {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.manager-panel.hidden {
+    display: none;
+}
+
+.manager-inputs {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-xs);
+}
+
+.manager-note {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    margin-bottom: 0;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .trans-workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .lang-selector {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    }
+
+    .lang-info {
+        flex-direction: column;
+    }
+
+    .dict-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dict-search-input {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .lang-selector {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .trans-stats {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+}
+
+/* ---- Print ---- */
+@media print {
+    .lang-selector,
+    .lang-info,
+    .trans-actions,
+    .trans-stats,
+    .dict-section,
+    .trans-panel__header {
+        display: none !important;
+    }
+
+    .trans-workspace {
+        display: block;
+    }
+
+    .trans-panel {
+        background: transparent !important;
+        border: none;
+    }
+
+    .trans-output-area {
+        background: transparent;
+        border: none;
+        color: #000;
+    }
+
+    .trans-found {
+        color: #000;
+        font-weight: 700;
+    }
+
+    .trans-missing {
+        color: #999;
+    }
+}

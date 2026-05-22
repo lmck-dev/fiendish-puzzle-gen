@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Translator — Fiendish Puzzle Gen</title>
+    <meta name="description" content="Translate text into fictional languages: Klingon, Sindarin Elvish, Dovahzul, Dothraki, and High Valyrian. Perfect for puzzle clues.">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/translator.css">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="app-container">
+        <!-- Back Nav -->
+        <nav class="no-print">
+            <a href="index.html" class="nav-back" id="nav-back">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Tools
+            </a>
+        </nav>
+
+        <!-- Header -->
+        <header class="site-header no-print" style="padding-top: 0;">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <path d="M4 7h10M9 4v3M6 7c0 4 3 8 8 10" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                        <path d="M18 24l3-8 3 8M18.8 22h4.4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+                        <path d="M14 16l4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+                    </svg>
+                </div>
+                <h1 class="site-title" style="font-size: clamp(1.4rem, 4vw, 2.2rem);">Language Translator</h1>
+            </div>
+            <p class="site-subtitle">Translate text into fictional &amp; fantasy languages</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="translator-layout">
+            <!-- Language Selector -->
+            <section class="no-print">
+                <div class="lang-selector" id="lang-selector">
+                    <button class="lang-card active" data-lang="klingon">
+                        <span class="lang-card__icon">🖖</span>
+                        <div class="lang-card__body">
+                            <div class="lang-card__name">Klingon</div>
+                            <div class="lang-card__universe">Star Trek</div>
+                        </div>
+                    </button>
+                    <button class="lang-card" data-lang="sindarin">
+                        <span class="lang-card__icon">🧝</span>
+                        <div class="lang-card__body">
+                            <div class="lang-card__name">Sindarin</div>
+                            <div class="lang-card__universe">Lord of the Rings</div>
+                        </div>
+                    </button>
+                    <button class="lang-card" data-lang="dovahzul">
+                        <span class="lang-card__icon">🐉</span>
+                        <div class="lang-card__body">
+                            <div class="lang-card__name">Dovahzul</div>
+                            <div class="lang-card__universe">Skyrim</div>
+                        </div>
+                    </button>
+                    <button class="lang-card" data-lang="dothraki">
+                        <span class="lang-card__icon">🐎</span>
+                        <div class="lang-card__body">
+                            <div class="lang-card__name">Dothraki</div>
+                            <div class="lang-card__universe">Game of Thrones</div>
+                        </div>
+                    </button>
+                    <button class="lang-card" data-lang="valyrian">
+                        <span class="lang-card__icon">🔥</span>
+                        <div class="lang-card__body">
+                            <div class="lang-card__name">High Valyrian</div>
+                            <div class="lang-card__universe">Game of Thrones</div>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Language Info -->
+            <div class="lang-info no-print">
+                <div class="lang-info__main">
+                    <h2 class="lang-info__title" id="lang-title">Klingon</h2>
+                    <p class="lang-info__native" id="lang-native">tlhIngan Hol</p>
+                    <p class="lang-info__desc" id="lang-desc">The warrior tongue of the Klingon Empire.</p>
+                </div>
+                <span class="lang-info__badge" id="lang-universe">Star Trek</span>
+            </div>
+
+            <!-- Direction Toggle + Actions -->
+            <div class="trans-actions no-print">
+                <button class="trans-dir-btn" id="trans-direction">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M4 6l4-4 4 4M4 10l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span id="trans-dir-label">English → Klingon</span>
+                </button>
+                <button class="btn btn-ghost" id="clear-trans-btn">Clear</button>
+            </div>
+
+            <!-- Translation Workspace -->
+            <div class="trans-workspace">
+                <!-- Input Panel -->
+                <div class="trans-panel">
+                    <div class="trans-panel__header">
+                        <span class="trans-panel__label">Input</span>
+                    </div>
+                    <textarea
+                        id="trans-input"
+                        class="trans-input-area"
+                        placeholder="Type or paste text to translate…"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="trans-panel">
+                    <div class="trans-panel__header">
+                        <span class="trans-panel__label">Translation</span>
+                        <button class="btn-copy-trans" id="copy-trans-btn">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+                                <path d="M9.5 4.5V3a1.5 1.5 0 00-1.5-1.5H3A1.5 1.5 0 001.5 3v5A1.5 1.5 0 003 9.5h1.5" stroke="currentColor" stroke-width="1.2"/>
+                            </svg>
+                            <span id="copy-trans-label">Copy</span>
+                        </button>
+                    </div>
+                    <div id="trans-output" class="trans-output-area">
+                        <span class="output-placeholder">Translation will appear here…</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="trans-stats no-print">
+                <div class="stat-item">
+                    <span class="stat-label">Words</span>
+                    <span class="stat-value" id="stats-total">0</span>
+                </div>
+                <div class="stat-item stat-item--translated">
+                    <span class="stat-label">Translated</span>
+                    <span class="stat-value" id="stats-translated">0</span>
+                </div>
+                <div class="stat-item stat-item--missing">
+                    <span class="stat-label">Not Found</span>
+                    <span class="stat-value" id="stats-missing">0</span>
+                </div>
+            </div>
+
+            <!-- Dictionary Browser & Manager -->
+            <section class="dict-section no-print">
+                <div class="dict-header">
+                    <div>
+                        <h3 class="dict-title">Dictionary Browser</h3>
+                        <span class="dict-count" id="dict-count">0 entries</span>
+                    </div>
+                    <input
+                        type="text"
+                        class="dict-search-input"
+                        id="dict-search"
+                        placeholder="Search dictionary…"
+                        autocomplete="off"
+                    >
+                </div>
+                <div class="dict-list" id="dict-list">
+                    <!-- Dictionary entries rendered here -->
+                </div>
+
+                <!-- Dictionary Manager -->
+                <div class="dict-manager">
+                    <h4 class="manager-title">Dictionary Manager</h4>
+                    <div class="manager-toolbar">
+                        <button class="btn btn-sm" id="btn-toggle-word">➕ Add Word</button>
+                        <button class="btn btn-sm" id="btn-toggle-lang">🌐 New Language</button>
+                        <button class="btn btn-sm btn-ghost" id="btn-toggle-import">⬇️ Import</button>
+                        <button class="btn btn-sm btn-ghost" id="btn-export">⬆️ Export JSON</button>
+                    </div>
+
+                    <!-- Add Word Panel -->
+                    <div class="manager-panel hidden" id="panel-add-word">
+                        <div class="manager-inputs">
+                            <input type="text" id="input-word-eng" placeholder="English Word (e.g. apple)" class="dict-search-input">
+                            <span class="dict-arrow">→</span>
+                            <input type="text" id="input-word-trans" placeholder="Translation" class="dict-search-input">
+                            <button class="btn btn-sm btn-primary" id="btn-save-word">Save Word</button>
+                        </div>
+                        <p class="manager-note">Words are saved to your browser's local storage.</p>
+                    </div>
+
+                    <!-- Add Language Panel -->
+                    <div class="manager-panel hidden" id="panel-add-lang">
+                        <div class="manager-inputs">
+                            <input type="text" id="input-lang-id" placeholder="ID (e.g. elvish)" class="dict-search-input">
+                            <input type="text" id="input-lang-name" placeholder="Display Name (e.g. Quenya)" class="dict-search-input">
+                            <button class="btn btn-sm btn-primary" id="btn-save-lang">Create Language</button>
+                        </div>
+                    </div>
+
+                    <!-- Import Panel -->
+                    <div class="manager-panel hidden" id="panel-import">
+                        <textarea id="input-import-data" class="trans-input-area" placeholder="Paste JSON data, or CSV format: english,translation" style="min-height: 100px; margin-bottom: 8px;"></textarea>
+                        <button class="btn btn-sm btn-primary" id="btn-save-import">Import to Current Language</button>
+                        <p class="manager-note">Bulk add massive word lists from the community. Supports 'english,translation' CSV lines.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer no-print">
+            <span class="phase-label">🔥 Fiendish Puzzle Gen</span>
+        </footer>
+    </div>
+
+    <script src="js/dictionaries.js"></script>
+    <script src="js/translator.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cypher Tools — Fiendish Puzzle Gen</title>
+    <meta name="description" content="Encode and decode text with 9 cipher types: Caesar, ROT13, Atbash, Vigenère, custom substitution, Morse code, binary, Elder Futhark runes, and Pigpen.">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/cyphers.css">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+
+    <div class="app-container">
+        <!-- Back Nav -->
+        <nav class="no-print">
+            <a href="index.html" class="nav-back" id="nav-back">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Tools
+            </a>
+        </nav>
+
+        <!-- Header -->
+        <header class="site-header no-print" style="padding-top: 0;">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <rect x="6" y="12" width="16" height="12" rx="2" stroke="white" stroke-width="1.5" opacity="0.9"/>
+                        <path d="M10 12V9a4 4 0 018 0v3" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.9"/>
+                        <circle cx="14" cy="18" r="1.5" fill="white" opacity="0.8"/>
+                        <path d="M14 19.5v1.5" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.8"/>
+                    </svg>
+                </div>
+                <h1 class="site-title" style="font-size: clamp(1.5rem, 4vw, 2.2rem);">Cypher Tools</h1>
+            </div>
+            <p class="site-subtitle">Encode, decode, and obfuscate text with 9 cipher types</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="cypher-layout">
+            <!-- Tab Bar -->
+            <div class="cypher-tabs no-print" id="cypher-tabs">
+                <button class="cypher-tab active" data-cypher="caesar"><span class="tab-icon">⚔️</span> <span class="tab-text">Caesar</span></button>
+                <button class="cypher-tab" data-cypher="rot13"><span class="tab-icon">🔄</span> <span class="tab-text">ROT13</span></button>
+                <button class="cypher-tab" data-cypher="atbash"><span class="tab-icon">🪞</span> <span class="tab-text">Atbash</span></button>
+                <button class="cypher-tab" data-cypher="vigenere"><span class="tab-icon">🗝️</span> <span class="tab-text">Vigenère</span></button>
+                <button class="cypher-tab" data-cypher="substitution"><span class="tab-icon">🎲</span> <span class="tab-text">Custom</span></button>
+                <button class="cypher-tab" data-cypher="morse"><span class="tab-icon">📡</span> <span class="tab-text">Morse</span></button>
+                <button class="cypher-tab" data-cypher="binary"><span class="tab-icon">💻</span> <span class="tab-text">Binary</span></button>
+                <button class="cypher-tab" data-cypher="runes"><span class="tab-icon">ᚱ</span> <span class="tab-text">Runes</span></button>
+                <button class="cypher-tab" data-cypher="pigpen"><span class="tab-icon">🔳</span> <span class="tab-text">Pigpen</span></button>
+            </div>
+
+            <!-- Cipher Info -->
+            <div class="cipher-info no-print">
+                <p class="cipher-desc" id="cipher-desc">Shift each letter by N positions in the alphabet</p>
+                <div class="heat-indicator">
+                    <span class="heat-label">Difficulty</span>
+                    <span id="heat-dots"></span>
+                </div>
+            </div>
+
+            <!-- Options Panel -->
+            <div class="options-panel no-print" id="cypher-options">
+                <!-- Dynamic options rendered here -->
+            </div>
+
+            <!-- Workspace -->
+            <div class="cypher-workspace">
+                <!-- Input Panel -->
+                <div class="cypher-panel">
+                    <div class="panel-header">
+                        <span class="panel-label">Input</span>
+                        <button class="btn-clear" id="clear-input-btn">Clear</button>
+                    </div>
+                    <textarea
+                        id="cypher-input"
+                        class="cypher-input-area"
+                        placeholder="Type or paste text here…"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+
+                <!-- Direction Toggle -->
+                <div class="direction-col no-print">
+                    <button class="direction-btn" id="direction-toggle" title="Toggle encode/decode direction">
+                        <span class="direction-arrow" id="direction-arrow">→</span>
+                        <span class="direction-label-text" id="direction-label">Encode</span>
+                    </button>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="cypher-panel">
+                    <div class="panel-header">
+                        <span class="panel-label">Output</span>
+                        <button class="btn-copy" id="copy-btn">
+                            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                                <rect x="4.5" y="4.5" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+                                <path d="M9.5 4.5V3a1.5 1.5 0 00-1.5-1.5H3A1.5 1.5 0 001.5 3v5A1.5 1.5 0 003 9.5h1.5" stroke="currentColor" stroke-width="1.2"/>
+                            </svg>
+                            <span id="copy-label">Copy</span>
+                        </button>
+                    </div>
+                    <div id="cypher-output" class="output-content">
+                        <span class="output-placeholder">Output will appear here…</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapping Reference -->
+            <section class="mapping-section no-print" id="cypher-mapping">
+                <h3 class="mapping-title">Mapping Reference</h3>
+                <div class="mapping-grid" id="cypher-mapping-grid">
+                    <!-- Generated mapping cells -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="site-footer no-print">
+            <span class="phase-label">🔥 Fiendish Puzzle Gen</span>
+        </footer>
+    </div>
+
+    <script src="js/cyphers.js"></script>
+</body>
+</html>

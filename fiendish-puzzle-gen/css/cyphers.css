@@ -1,0 +1,558 @@
+/* =============================================
+   Fiendish Puzzle Gen — Cypher Tools Styles
+   ============================================= */
+
+/* ---- Tab Bar ---- */
+.cypher-tabs {
+    display: flex;
+    gap: 6px;
+    padding: var(--space-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-lg);
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-default) transparent;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cypher-tabs::-webkit-scrollbar {
+    height: 4px;
+}
+
+.cypher-tabs::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.cypher-tabs::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 2px;
+}
+
+.cypher-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.cypher-tab:hover {
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.cypher-tab.active {
+    color: var(--text-primary);
+    background: var(--bg-elevated);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-icon {
+    font-size: 1rem;
+}
+
+/* ---- Cipher Info Bar ---- */
+.cipher-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
+}
+
+.cipher-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    flex: 1;
+    min-width: 200px;
+}
+
+.heat-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.heat-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-right: 4px;
+}
+
+.heat-dot {
+    font-size: 0.9rem;
+    opacity: 0.2;
+    transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.heat-dot.active {
+    opacity: 1;
+}
+
+/* ---- Options Panel ---- */
+.options-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    margin-bottom: var(--space-lg);
+}
+
+.option-row {
+    margin-bottom: var(--space-md);
+}
+
+.option-row:last-child {
+    margin-bottom: 0;
+}
+
+.option-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.option-note code {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+.form-input--mono {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 2px;
+}
+
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 0.78rem;
+}
+
+/* ---- Range Slider ---- */
+.form-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 3px;
+    outline: none;
+    margin-top: var(--space-sm);
+}
+
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+    transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    box-shadow: 0 2px 12px rgba(230, 57, 70, 0.5);
+}
+
+.form-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+}
+
+/* ---- Workspace ---- */
+.cypher-workspace {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+    align-items: stretch;
+}
+
+.cypher-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-md);
+}
+
+.panel-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.cypher-input-area {
+    width: 100%;
+    min-height: 160px;
+    padding: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    outline: none;
+    resize: vertical;
+    transition: border-color var(--duration-normal) var(--ease-out);
+    flex: 1;
+}
+
+.cypher-input-area:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-primary-dim);
+}
+
+.cypher-input-area::placeholder {
+    color: var(--text-muted);
+}
+
+/* ---- Output Area ---- */
+.output-content {
+    width: 100%;
+    min-height: 160px;
+    padding: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    overflow-wrap: break-word;
+    word-break: break-all;
+    flex: 1;
+    overflow-y: auto;
+    user-select: all;
+}
+
+.output-content.output-runes {
+    font-size: 1.3rem;
+    letter-spacing: 3px;
+    word-break: normal;
+}
+
+.output-content.output-pigpen {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    font-size: 0;
+    word-break: normal;
+}
+
+.output-placeholder {
+    color: var(--text-muted);
+    font-style: italic;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+}
+
+/* ---- Pigpen Glyphs ---- */
+.pigpen-glyph {
+    color: var(--accent-primary);
+    vertical-align: middle;
+}
+
+.pigpen-space {
+    display: inline-block;
+    width: 16px;
+    height: 28px;
+}
+
+.pigpen-char {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    vertical-align: middle;
+    line-height: 28px;
+}
+
+/* ---- Direction Toggle ---- */
+.direction-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+}
+
+.direction-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: var(--space-md);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+    font-family: var(--font-sans);
+}
+
+.direction-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.direction-btn.self-inverse {
+    cursor: default;
+    border-color: var(--accent-secondary);
+    color: var(--accent-secondary);
+    opacity: 0.7;
+}
+
+.direction-btn.decoding {
+    background: var(--accent-primary-dim);
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.direction-arrow {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.direction-label-text {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ---- Copy Button ---- */
+.btn-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.btn-copy:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+}
+
+.btn-copy.copied {
+    border-color: var(--accent-success);
+    color: var(--accent-success);
+}
+
+.btn-clear {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color var(--duration-fast) var(--ease-out);
+}
+
+.btn-clear:hover {
+    color: var(--text-primary);
+}
+
+/* ---- Mapping Reference ---- */
+.mapping-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+}
+
+.mapping-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-md);
+}
+
+.mapping-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.mapping-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    transition: all var(--duration-fast) var(--ease-out);
+}
+
+.mapping-cell:hover {
+    border-color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.map-from {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.map-arrow {
+    color: var(--text-muted);
+    font-size: 0.65rem;
+}
+
+.map-to {
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+
+/* ---- Page Layout ---- */
+.cypher-layout {
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .cypher-workspace {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+    }
+
+    .direction-col {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .direction-btn {
+        flex-direction: row;
+    }
+
+    .direction-arrow {
+        font-size: 1.1rem;
+    }
+
+    .cypher-tabs {
+        padding: 6px;
+        gap: 4px;
+    }
+
+    .cypher-tab {
+        padding: 6px 10px;
+        font-size: 0.72rem;
+    }
+
+    .tab-icon {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .cypher-tab .tab-text {
+        display: none;
+    }
+
+    .cypher-tab {
+        padding: 8px;
+    }
+
+    .tab-icon {
+        font-size: 1.1rem;
+    }
+}
+
+/* ---- Print ---- */
+@media print {
+    .cypher-tabs,
+    .options-panel,
+    .direction-col,
+    .panel-header,
+    .cipher-info {
+        display: none !important;
+    }
+
+    .cypher-workspace {
+        display: block;
+    }
+
+    .cypher-panel {
+        background: transparent !important;
+        border: 1px solid #ccc;
+        backdrop-filter: none;
+    }
+
+    .output-content {
+        color: #000;
+        background: transparent;
+        border: none;
+    }
+
+    .pigpen-glyph {
+        color: #000;
+    }
+}
