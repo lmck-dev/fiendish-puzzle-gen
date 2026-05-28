@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Search Generator</title>
+    <meta name="description" content="Generate printable word search puzzles from your own words and phrases.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="app-header no-print">
+            <div class="header-content">
+                <div class="logo-group">
+                    <div class="logo-icon">
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                            <rect x="2" y="2" width="8" height="8" rx="2" fill="var(--accent)"/>
+                            <rect x="12" y="2" width="8" height="8" rx="2" fill="var(--accent)" opacity="0.6"/>
+                            <rect x="2" y="12" width="8" height="8" rx="2" fill="var(--accent)" opacity="0.6"/>
+                            <rect x="12" y="12" width="8" height="8" rx="2" fill="var(--accent)" opacity="0.3"/>
+                            <rect x="22" y="2" width="4" height="4" rx="1" fill="var(--accent)" opacity="0.4"/>
+                            <rect x="2" y="22" width="4" height="4" rx="1" fill="var(--accent)" opacity="0.4"/>
+                        </svg>
+                    </div>
+                    <h1>Word Search Generator</h1>
+                </div>
+                <p class="subtitle">Enter words below to create a printable puzzle</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Controls Panel -->
+            <section class="controls-panel no-print" id="controls-panel">
+                <div class="input-area">
+                    <label for="word-input" class="input-label">Add Words</label>
+                    <div class="input-row">
+                        <input 
+                            type="text" 
+                            id="word-input" 
+                            placeholder="Type a word and press Enter…" 
+                            autocomplete="off"
+                            maxlength="20"
+                        >
+                        <button id="add-word-btn" class="btn btn-add" title="Add word">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="input-hint">Letters and numbers only · Max 20 characters per word</p>
+                </div>
+
+                <!-- Word Tags -->
+                <div class="word-tags" id="word-tags">
+                    <!-- Tags inserted here -->
+                </div>
+
+                <!-- Hex Mode Toggle -->
+                <div class="hex-toggle-row" id="hex-toggle-row">
+                    <label class="toggle-switch" for="hex-mode">
+                        <input type="checkbox" id="hex-mode">
+                        <span class="toggle-track">
+                            <span class="toggle-thumb"></span>
+                        </span>
+                        <span class="toggle-label">
+                            <span class="toggle-title">Hex Mode</span>
+                            <span class="toggle-desc">Restrict to <code>0-9 A-F</code> only — filler uses hex characters</span>
+                        </span>
+                    </label>
+                </div>
+
+                <!-- Options Row -->
+                <div class="options-row">
+                    <div class="option-group">
+                        <label for="grid-size" class="option-label">Grid Size</label>
+                        <select id="grid-size">
+                            <option value="10">10 × 10</option>
+                            <option value="12" selected>12 × 12</option>
+                            <option value="14">14 × 14</option>
+                            <option value="16">16 × 16</option>
+                            <option value="18">18 × 18</option>
+                            <option value="20">20 × 20</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="direction-mode" class="option-label">Directions</label>
+                        <select id="direction-mode">
+                            <option value="easy">Easy (→ ↓)</option>
+                            <option value="medium" selected>Medium (→ ↓ ↘)</option>
+                            <option value="hard">Hard (all 8)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="puzzle-title" class="option-label">Puzzle Title</label>
+                        <input type="text" id="puzzle-title" placeholder="My Word Search" maxlength="50">
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="generate-btn" class="btn btn-primary" disabled>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M2 9a7 7 0 1114 0A7 7 0 012 9z" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M9 5v4l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                        Generate Puzzle
+                    </button>
+                    <button id="print-btn" class="btn btn-secondary" disabled>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M4.5 6V2h9v4M4.5 13.5H3a1.5 1.5 0 01-1.5-1.5V9A1.5 1.5 0 013 7.5h12A1.5 1.5 0 0116.5 9v3a1.5 1.5 0 01-1.5 1.5h-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="4.5" y="10.5" width="9" height="5.5" rx="0.5" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        Print
+                    </button>
+                    <button id="clear-btn" class="btn btn-ghost">Clear All</button>
+                </div>
+            </section>
+
+            <!-- Puzzle Output -->
+            <section class="puzzle-output" id="puzzle-output" style="display:none;">
+                <!-- Print-only header -->
+                <div class="print-header print-only">
+                    <h2 id="print-title" class="print-title">Word Search</h2>
+                </div>
+
+                <div class="grid-container">
+                    <table class="puzzle-grid" id="puzzle-grid">
+                        <!-- Generated grid -->
+                    </table>
+                </div>
+
+                <div class="word-bank">
+                    <h3 class="word-bank-title">Find these words:</h3>
+                    <ul class="word-bank-list" id="word-bank-list">
+                        <!-- Word list here -->
+                    </ul>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
