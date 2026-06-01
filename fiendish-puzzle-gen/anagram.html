@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anagram Generator — Fiendish Puzzle Gen</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/anagram.css">
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    <div class="app-container">
+        <nav class="no-print">
+            <a href="index.html" class="nav-back">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Back to Tools
+            </a>
+        </nav>
+
+        <header class="site-header no-print" style="padding-top:0">
+            <div class="logo-group">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                        <text x="3" y="18" font-family="monospace" font-size="13" fill="white" opacity="0.9">A</text>
+                        <text x="11" y="18" font-family="monospace" font-size="13" fill="white" opacity="0.6">B</text>
+                        <text x="19" y="18" font-family="monospace" font-size="13" fill="white" opacity="0.4">C</text>
+                        <path d="M3 21 Q14 26 25 21" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5" fill="none" stroke-dasharray="2 3"/>
+                    </svg>
+                </div>
+                <h1 class="site-title" style="font-size:clamp(1.5rem,4vw,2.2rem)">Anagram Generator</h1>
+            </div>
+            <p class="site-subtitle">Scramble words and phrases into devilish anagrams</p>
+        </header>
+
+        <main class="ag-layout">
+            <section class="controls-panel no-print fade-in">
+
+                <div class="input-area">
+                    <label class="form-label">Phrases / Words to Scramble</label>
+                    <div class="input-row">
+                        <input type="text" id="phrase-input" class="form-input" placeholder="Type a word or phrase and press Enter…" autocomplete="off" maxlength="80">
+                        <button id="add-phrase-btn" class="btn-add" title="Add phrase">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="input-hint">Each entry becomes one anagram clue · Max 80 characters</p>
+                </div>
+
+                <div class="phrase-tags" id="phrase-tags"></div>
+
+                <div class="options-row">
+                    <div class="option-group">
+                        <label for="difficulty" class="form-label">Scramble Mode</label>
+                        <select id="difficulty" class="form-select">
+                            <option value="word">Word-by-Word (Easy)</option>
+                            <option value="phrase" selected>Full Phrase (Medium)</option>
+                            <option value="hard">Full Phrase + Red Herrings (Hard)</option>
+                        </select>
+                    </div>
+                    <div class="option-group">
+                        <label for="puzzle-title" class="form-label">Puzzle Title</label>
+                        <input type="text" id="puzzle-title" class="form-input" placeholder="My Anagram Puzzle" maxlength="50">
+                    </div>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-switch" for="show-hints">
+                        <input type="checkbox" id="show-hints">
+                        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                        <span class="toggle-label">
+                            <span class="toggle-title">Show Word Lengths</span>
+                            <span class="toggle-desc">Print blank squares showing how many letters each word has</span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-switch" for="show-answers">
+                        <input type="checkbox" id="show-answers" checked>
+                        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+                        <span class="toggle-label">
+                            <span class="toggle-title">Include Answer Key</span>
+                            <span class="toggle-desc">Prints on a separate page</span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="generate-btn" class="btn btn-primary" disabled>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M9 1.5L11 6.5L16.5 7.5L12.5 11.5L13.5 17L9 14.5L4.5 17L5.5 11.5L1.5 7.5L7 6.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                        </svg>
+                        Generate Puzzle
+                    </button>
+                    <button id="print-btn" class="btn btn-secondary" disabled>
+                        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                            <path d="M4.5 6V2h9v4M4.5 13.5H3a1.5 1.5 0 01-1.5-1.5V9A1.5 1.5 0 013 7.5h12A1.5 1.5 0 0116.5 9v3a1.5 1.5 0 01-1.5 1.5h-1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <rect x="4.5" y="10.5" width="9" height="5.5" rx="0.5" stroke="currentColor" stroke-width="1.5"/>
+                        </svg>
+                        Print
+                    </button>
+                    <button id="clear-btn" class="btn btn-ghost">Clear All</button>
+                </div>
+            </section>
+
+            <section class="puzzle-output" id="puzzle-output" style="display:none">
+                <div class="print-header print-only">
+                    <h2 id="print-title" class="print-title">Anagram Puzzle</h2>
+                </div>
+
+                <div class="ag-instructions no-print">
+                    <p>Unscramble each anagram to find the hidden word or phrase.</p>
+                </div>
+
+                <div id="anagram-list" class="anagram-list"></div>
+
+                <div id="answer-key-section" class="answer-key-section" style="display:none">
+                    <div class="print-header print-only">
+                        <h2 class="print-title">Answer Key</h2>
+                    </div>
+                    <div class="grid-section-label">
+                        <span class="label-dot label-dot--answer"></span>
+                        Answers
+                    </div>
+                    <div id="answer-list" class="answer-list"></div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="site-footer no-print">
+            <span class="phase-label">Fiendish Puzzle Gen · Phase 3</span>
+        </footer>
+    </div>
+    <script src="js/anagram.js"></script>
+</body>
+</html>

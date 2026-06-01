@@ -1,0 +1,325 @@
+/* =============================================
+   Fiendish Puzzle Gen — Anagram Generator Styles
+   ============================================= */
+
+.ag-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+/* ---- Controls ---- */
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.input-row {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.input-row .form-input {
+    flex: 1;
+}
+
+.btn-add {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-primary-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-md);
+    color: var(--accent-primary);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.btn-add:hover {
+    background: rgba(230, 57, 70, 0.25);
+    box-shadow: 0 0 12px var(--accent-primary-glow);
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+/* ---- Phrase Tags ---- */
+.phrase-tags {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    min-height: 0;
+}
+
+.phrase-tag {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: 7px 12px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--text-primary);
+}
+
+.phrase-tag__text {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+}
+
+.phrase-tag__remove {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0 2px;
+    flex-shrink: 0;
+    transition: color var(--duration-fast);
+}
+
+.phrase-tag__remove:hover {
+    color: var(--accent-primary);
+}
+
+/* ---- Options ---- */
+.options-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.toggle-row {
+    padding: var(--space-md) 0;
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* ---- Action Buttons ---- */
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.action-buttons .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ---- Puzzle Output ---- */
+.puzzle-output {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.ag-instructions {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* ---- Anagram Items ---- */
+.anagram-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.anagram-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.anagram-number {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-primary-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.anagram-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.anagram-scrambled {
+    font-family: var(--font-mono);
+    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.15em;
+    word-break: break-all;
+}
+
+.anagram-hint {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    letter-spacing: 0.4em;
+}
+
+.anagram-answer-line {
+    height: 2px;
+    background: var(--border-default);
+    border-radius: 1px;
+    margin-top: var(--space-md);
+}
+
+/* ---- Answer Key ---- */
+.answer-key-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+}
+
+.grid-section-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-lg);
+}
+
+.label-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.label-dot--answer {
+    background: var(--accent-secondary);
+}
+
+.answer-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.answer-item {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-md);
+    font-size: 0.9rem;
+}
+
+.answer-number {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    min-width: 24px;
+}
+
+.answer-text {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+/* ---- Print ---- */
+@media print {
+    .ag-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .puzzle-output {
+        display: flex !important;
+    }
+
+    .anagram-item {
+        background: none;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        break-inside: avoid;
+    }
+
+    .anagram-scrambled {
+        color: #000;
+    }
+
+    .anagram-answer-line {
+        background: #999;
+    }
+
+    .answer-key-section {
+        break-before: page;
+        background: none;
+        border: none;
+    }
+
+    .answer-list {
+        color: #000;
+    }
+
+    .anagram-number {
+        background: none;
+        border: 1px solid #000;
+        color: #000;
+    }
+}
+
+.print-header { display: none; }
+.print-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+    .ag-layout {
+        grid-template-columns: 1fr;
+    }
+}

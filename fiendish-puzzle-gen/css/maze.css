@@ -1,0 +1,176 @@
+/* =============================================
+   Fiendish Puzzle Gen — Maze Styles
+   ============================================= */
+
+.mz-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+/* ---- Controls ---- */
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+.options-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+.toggle-row {
+    padding: var(--space-md) 0;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.action-buttons .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ---- Legend ---- */
+.mz-legend {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.legend-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-dot--start { background: #10b981; }
+.legend-dot--end   { background: #e63946; }
+.legend-dot--path  { background: #f59e0b; }
+
+/* ---- Puzzle Output ---- */
+.puzzle-output {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+.mz-instructions {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.mz-instructions strong {
+    color: var(--text-primary);
+    font-style: normal;
+}
+
+/* ---- Canvas ---- */
+.mz-wrap {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    display: inline-block;
+}
+
+.maze-canvas {
+    display: block;
+    border-radius: var(--radius-md);
+    max-width: 100%;
+}
+
+/* ---- Answer section ---- */
+.answer-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    padding: var(--space-xl);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(12px);
+}
+
+.grid-section-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.label-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.label-dot--answer { background: var(--accent-secondary); }
+
+.mz-message {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent-tertiary);
+    letter-spacing: 0.1em;
+}
+
+/* ---- Print ---- */
+.print-header { display: none; }
+.print-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+@media print {
+    .mz-layout { grid-template-columns: 1fr; }
+    .puzzle-output { display: flex !important; }
+    .answer-section { break-before: page; background: none; border: none; }
+    .maze-canvas { max-width: 100%; }
+    body { background: #fff; }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+    .mz-layout { grid-template-columns: 1fr; }
+}
