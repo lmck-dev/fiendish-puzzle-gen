@@ -144,9 +144,44 @@
                     <span class="stat-label">Translated</span>
                     <span class="stat-value" id="stats-translated">0</span>
                 </div>
+                <div class="stat-item stat-item--lemma">
+                    <span class="stat-label">Via Lemma</span>
+                    <span class="stat-value" id="stats-lemma">0</span>
+                </div>
+                <div class="stat-item stat-item--synonym">
+                    <span class="stat-label">Via Synonym</span>
+                    <span class="stat-value" id="stats-synonym">0</span>
+                </div>
                 <div class="stat-item stat-item--missing">
                     <span class="stat-label">Not Found</span>
                     <span class="stat-value" id="stats-missing">0</span>
+                </div>
+            </div>
+
+            <!-- AI Grammar Layer -->
+            <div class="ai-panel no-print">
+                <div class="ai-panel__header">
+                    <div class="ai-panel__title-row">
+                        <span class="ai-badge">AI</span>
+                        <h3 class="ai-panel__title">Grammar Layer</h3>
+                        <span id="ai-status" class="ai-status ai-status--off">No API key — grammar layer inactive</span>
+                    </div>
+                    <p id="grammar-note" class="ai-grammar-note"></p>
+                </div>
+                <div class="ai-panel__body">
+                    <div class="ai-key-row">
+                        <input type="password" id="ai-key-input" class="form-input ai-key-input" placeholder="Paste Gemini API key…" autocomplete="off">
+                        <button id="ai-save-btn" class="btn btn-secondary btn-sm">Save</button>
+                        <button id="ai-clear-btn" class="btn btn-ghost btn-sm">Clear</button>
+                    </div>
+                    <p class="ai-key-hint">Free tier: <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> · Key stored in your browser only.</p>
+                    <button id="ai-grammar-btn" class="btn btn-primary btn-sm" disabled>
+                        Apply Grammar (Gemini)
+                    </button>
+                    <div id="ai-grammar-area" class="ai-grammar-area" style="display:none">
+                        <span class="ai-grammar-label">Grammar-corrected:</span>
+                        <div id="ai-grammar-output" class="ai-grammar-output"></div>
+                    </div>
                 </div>
             </div>
 
@@ -216,6 +251,8 @@
     </div>
 
     <script src="js/dictionaries.js"></script>
+    <script src="js/lemmatizer.js"></script>
+    <script src="js/synonyms.js"></script>
     <script src="js/translator.js"></script>
 </body>
 </html>

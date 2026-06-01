@@ -302,7 +302,138 @@
 }
 
 .stat-item--translated .stat-value { color: var(--accent-success); }
-.stat-item--missing .stat-value { color: var(--accent-tertiary); }
+.stat-item--lemma .stat-value    { color: var(--accent-secondary); }
+.stat-item--synonym .stat-value  { color: #f59e0b; }
+.stat-item--missing .stat-value  { color: var(--accent-tertiary); }
+
+/* ---- Word source colouring ---- */
+.trans-exact   { color: var(--accent-primary); }
+.trans-lemma   { color: var(--accent-secondary); }
+.trans-synonym { color: var(--accent-tertiary); }
+.trans-lemma:hover,
+.trans-synonym:hover { background: rgba(139,92,246,0.1); }
+
+/* ---- AI Grammar Panel ---- */
+.ai-panel {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-image: var(--gradient-card);
+    margin-bottom: var(--space-xl);
+}
+
+.ai-panel__header {
+    margin-bottom: var(--space-lg);
+}
+
+.ai-panel__title-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-sm);
+}
+
+.ai-panel__title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.ai-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    background: linear-gradient(135deg, #4285f4, #34a853);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border-radius: 4px;
+}
+
+.ai-status {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.ai-status--ok  { background: var(--accent-success-dim); color: var(--accent-success); }
+.ai-status--off { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+
+.ai-grammar-note {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.5;
+}
+
+.ai-panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+}
+
+.ai-key-row {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.ai-key-input {
+    flex: 1;
+    min-width: 200px;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.btn-sm {
+    padding: 7px 14px;
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.ai-key-hint {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+}
+
+.ai-key-hint a {
+    color: var(--accent-secondary);
+    text-decoration: none;
+}
+
+.ai-key-hint a:hover { text-decoration: underline; }
+
+.ai-grammar-area {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+}
+
+.ai-grammar-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.ai-grammar-output {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--accent-primary);
+    letter-spacing: 0.05em;
+    line-height: 1.6;
+    word-break: break-word;
+}
 
 /* ---- Dictionary Browser ---- */
 .dict-section {

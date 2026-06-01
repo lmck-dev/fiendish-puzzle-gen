@@ -1,122 +1,132 @@
 /* =============================================
    Fiendish Puzzle Gen — Language Translator Engine
+   Three-layer translation pipeline:
+     L0 — exact dictionary match
+     L1 — lemmatized form match (FPG_Lemmatizer)
+     L2 — semantic synonym expansion (FPG_Synonyms)
+     L3 — Gemini grammar reordering (optional, API key required)
    ============================================= */
 
 (function () {
     "use strict";
 
     // ============================================
+    // CONSTANTS
+    // ============================================
+
+    const STORAGE_KEY   = "fpg_custom_languages";
+    const GEMINI_KEY    = "fpg_gemini_key";
+    const GEMINI_URL    = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+
+    // Grammar profiles — used by Layer 3 to instruct Gemini
+    const GRAMMAR = {
+        klingon:  { order: "OVS",  note: "Klingon: Object–Verb–Subject. Verbs take prefixes encoding subject/object." },
+        sindarin: { order: "VSO",  note: "Sindarin: Verb–Subject–Object. Adjectives follow nouns." },
+        dothraki: { order: "SVO",  note: "Dothraki: Subject–Verb–Object, similar to English. Adjectives follow nouns." },
+        dovahzul: { order: "SVO",  note: "Dovahzul (Dragon Language): Subject–Verb–Object." },
+        valyrian: { order: "SOV",  note: "High Valyrian: flexible, tends toward Subject–Object–Verb." },
+    };
+
+    // ============================================
     // STATE
     // ============================================
 
-    const LOCAL_STORAGE_KEY = "fpg_custom_languages";
-    let appLanguages = {};
+    let appLanguages    = {};
     let activeLanguageId = "klingon";
-    let isReversed = false; // false = English→Fantasy, true = Fantasy→English
-    let reverseDict = {};   // built from active language's dict
+    let isReversed      = false;
+    let reverseDict     = {};
 
     // ============================================
-    // DOM REFERENCES
+    // DOM
     // ============================================
 
-    const langSelector = document.getElementById("lang-selector");
-    const inputArea = document.getElementById("trans-input");
-    const outputArea = document.getElementById("trans-output");
-    const clearBtn = document.getElementById("clear-trans-btn");
-    const copyBtn = document.getElementById("copy-trans-btn");
-    const copyLabel = document.getElementById("copy-trans-label");
-    const dirToggle = document.getElementById("trans-direction");
-    const dirLabel = document.getElementById("trans-dir-label");
-    const langTitle = document.getElementById("lang-title");
-    const langNative = document.getElementById("lang-native");
-    const langDesc = document.getElementById("lang-desc");
-    const langUniverse = document.getElementById("lang-universe");
-    const dictSearch = document.getElementById("dict-search");
-    const dictList = document.getElementById("dict-list");
-    const dictCount = document.getElementById("dict-count");
-    const statsTotal = document.getElementById("stats-total");
+    const langSelector  = document.getElementById("lang-selector");
+    const inputArea     = document.getElementById("trans-input");
+    const outputArea    = document.getElementById("trans-output");
+    const clearBtn      = document.getElementById("clear-trans-btn");
+    const copyBtn       = document.getElementById("copy-trans-btn");
+    const copyLabel     = document.getElementById("copy-trans-label");
+    const dirToggle     = document.getElementById("trans-direction");
+    const dirLabel      = document.getElementById("trans-dir-label");
+    const langTitle     = document.getElementById("lang-title");
+    const langNative    = document.getElementById("lang-native");
+    const langDesc      = document.getElementById("lang-desc");
+    const langUniverse  = document.getElementById("lang-universe");
+    const dictSearch    = document.getElementById("dict-search");
+    const dictList      = document.getElementById("dict-list");
+    const dictCount     = document.getElementById("dict-count");
+    const statsTotal    = document.getElementById("stats-total");
     const statsTranslated = document.getElementById("stats-translated");
-    const statsMissing = document.getElementById("stats-missing");
+    const statsMissing  = document.getElementById("stats-missing");
+    const statsLemma    = document.getElementById("stats-lemma");
+    const statsSynonym  = document.getElementById("stats-synonym");
 
     // Manager
-    const btnToggleWord = document.getElementById("btn-toggle-word");
-    const btnToggleLang = document.getElementById("btn-toggle-lang");
+    const btnToggleWord   = document.getElementById("btn-toggle-word");
+    const btnToggleLang   = document.getElementById("btn-toggle-lang");
     const btnToggleImport = document.getElementById("btn-toggle-import");
-    const btnExport = document.getElementById("btn-export");
-    
-    const panelAddWord = document.getElementById("panel-add-word");
-    const panelAddLang = document.getElementById("panel-add-lang");
-    const panelImport = document.getElementById("panel-import");
-    
-    const btnSaveWord = document.getElementById("btn-save-word");
-    const inputWordEng = document.getElementById("input-word-eng");
-    const inputWordTrans = document.getElementById("input-word-trans");
-    
-    const btnSaveLang = document.getElementById("btn-save-lang");
-    const inputLangId = document.getElementById("input-lang-id");
-    const inputLangName = document.getElementById("input-lang-name");
-    
-    const btnSaveImport = document.getElementById("btn-save-import");
+    const btnExport       = document.getElementById("btn-export");
+    const panelAddWord    = document.getElementById("panel-add-word");
+    const panelAddLang    = document.getElementById("panel-add-lang");
+    const panelImport     = document.getElementById("panel-import");
+    const btnSaveWord     = document.getElementById("btn-save-word");
+    const inputWordEng    = document.getElementById("input-word-eng");
+    const inputWordTrans  = document.getElementById("input-word-trans");
+    const btnSaveLang     = document.getElementById("btn-save-lang");
+    const inputLangId     = document.getElementById("input-lang-id");
+    const inputLangName   = document.getElementById("input-lang-name");
+    const btnSaveImport   = document.getElementById("btn-save-import");
     const inputImportData = document.getElementById("input-import-data");
 
+    // AI layer
+    const aiKeyInput    = document.getElementById("ai-key-input");
+    const aiSaveBtn     = document.getElementById("ai-save-btn");
+    const aiClearBtn    = document.getElementById("ai-clear-btn");
+    const aiStatus      = document.getElementById("ai-status");
+    const aiGrammarBtn  = document.getElementById("ai-grammar-btn");
+    const aiGrammarOut  = document.getElementById("ai-grammar-output");
+    const aiGrammarArea = document.getElementById("ai-grammar-area");
+    const grammarNote   = document.getElementById("grammar-note");
+
     // ============================================
-    // HELPERS
+    // LANGUAGE LOADING
     // ============================================
 
     function loadLanguages() {
-        // Deep copy default languages
         appLanguages = JSON.parse(JSON.stringify(window.LANGUAGES || {}));
-        
-        // Merge custom from localStorage
         try {
-            const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
+            const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
-                const customLangs = JSON.parse(saved);
-                for (const [id, data] of Object.entries(customLangs)) {
+                const custom = JSON.parse(saved);
+                for (const [id, data] of Object.entries(custom)) {
                     if (appLanguages[id]) {
-                        // Merge dict if default language exists
                         appLanguages[id].dict = { ...appLanguages[id].dict, ...data.dict };
                     } else {
-                        // Add new custom language
                         appLanguages[id] = data;
                     }
                 }
             }
-        } catch (e) {
-            console.error("Failed to load custom languages", e);
-        }
+        } catch (e) { console.error("Failed to load custom languages", e); }
     }
 
     function saveToStorage() {
-        // Only save what is NOT in defaults, OR differences.
-        // For simplicity, we just save any language that has been modified,
-        // excluding default keys if we want to save space.
-        // To be safe and simple: just grab all languages, and for base ones
-        // only save dict entries that aren't in window.LANGUAGES.
         const toSave = {};
         for (const [id, lang] of Object.entries(appLanguages)) {
-            const baseLang = window.LANGUAGES[id];
-            if (!baseLang) {
-                toSave[id] = lang; // entire custom language
+            const base = window.LANGUAGES[id];
+            if (!base) {
+                toSave[id] = lang;
             } else {
-                // Find custom words added to default ones
                 const customDict = {};
                 for (const [eng, trans] of Object.entries(lang.dict)) {
-                    if (!baseLang.dict[eng] || baseLang.dict[eng] !== trans) {
-                        customDict[eng] = trans;
-                    }
+                    if (!base.dict[eng] || base.dict[eng] !== trans) customDict[eng] = trans;
                 }
-                if (Object.keys(customDict).length > 0) {
-                    toSave[id] = { dict: customDict };
-                }
+                if (Object.keys(customDict).length > 0) toSave[id] = { dict: customDict };
             }
         }
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(toSave));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
     }
 
-    function getLanguage(id) {
-        return appLanguages[id];
-    }
+    function getLanguage(id) { return appLanguages[id]; }
 
     function buildReverseDict(dict) {
         const rev = {};
@@ -127,118 +137,226 @@
         return rev;
     }
 
-    function tokenize(text) {
-        // Split into tokens preserving punctuation and whitespace
-        return text.match(/[\w'']+|[^\w'']+/g) || [];
-    }
+    // ============================================
+    // LAYER 0–2: TRANSLATION PIPELINE
+    // ============================================
 
-    function translateToken(token, dict, reverse) {
+    // Source tags for UI colouring
+    const SRC = { EXACT: "exact", LEMMA: "lemma", SYNONYM: "synonym", MISS: "miss", SPACE: "space", PUNCT: "punct" };
+
+    function lookupWord(token, dict) {
         const lower = token.toLowerCase();
 
-        if (reverse) {
-            // Fantasy → English
-            if (reverseDict[lower]) {
-                const result = reverseDict[lower];
-                return { original: token, translated: matchCase(token, result), found: true };
+        // L0: exact match
+        if (dict[lower]) return { translated: dict[lower], source: SRC.EXACT };
+
+        // For reverse mode we stop at L0
+        if (isReversed) return null;
+
+        // L1: lemmatized forms
+        if (window.FPG_Lemmatizer) {
+            const lemmas = FPG_Lemmatizer.lemmatize(lower);
+            for (const lemma of lemmas) {
+                if (lemma !== lower && dict[lemma]) {
+                    return { translated: dict[lemma], source: SRC.LEMMA, via: lemma };
+                }
             }
-        } else {
-            // English → Fantasy
-            if (dict[lower]) {
-                const result = dict[lower];
-                return { original: token, translated: matchCase(token, result), found: true };
+            // L2: synonym expansion — try original AND each lemma form
+            if (window.FPG_Synonyms) {
+                const dictKeys = Object.keys(dict);
+                const keysSet = new Set(dictKeys);
+                const candidates = [lower, ...lemmas.filter(l => l !== lower)];
+                for (const candidate of candidates) {
+                    const match = FPG_Synonyms.findMatch(candidate, keysSet);
+                    if (match && dict[match]) {
+                        return { translated: dict[match], source: SRC.SYNONYM, via: match };
+                    }
+                }
             }
         }
 
-        return { original: token, translated: token, found: false };
+        return null;
     }
 
     function matchCase(source, target) {
-        if (source === source.toUpperCase() && source.length > 1) {
-            return target.toUpperCase();
-        }
-        if (source[0] === source[0].toUpperCase()) {
-            return target.charAt(0).toUpperCase() + target.slice(1);
-        }
+        if (source === source.toUpperCase() && source.length > 1) return target.toUpperCase();
+        if (source[0] === source[0].toUpperCase()) return target.charAt(0).toUpperCase() + target.slice(1);
         return target;
     }
 
-    // Try multi-word phrases first (longest match)
     function translateText(text, dict) {
         const words = text.split(/(\s+)/);
         const result = [];
         let i = 0;
 
         while (i < words.length) {
-            // Skip whitespace tokens
             if (/^\s+$/.test(words[i])) {
-                result.push({ original: words[i], translated: words[i], found: true, isSpace: true });
+                result.push({ original: words[i], translated: words[i], source: SRC.SPACE });
                 i++;
                 continue;
             }
 
-            // Try matching multi-word phrases (up to 4 words)
+            // Try multi-word phrase match first (L0 exact only for phrases)
             let matched = false;
             for (let len = Math.min(7, words.length - i); len > 1; len -= 2) {
-                // len steps by 2 to skip space tokens between words
                 const phraseTokens = words.slice(i, i + len);
                 const phrase = phraseTokens.join("").toLowerCase().trim();
-
                 const lookup = isReversed ? reverseDict : dict;
-                const found = isReversed ? reverseDict[phrase] : dict[phrase];
-
-                if (found) {
-                    const translated = matchCase(phraseTokens.join(""), found);
-                    result.push({ original: phraseTokens.join(""), translated, found: true, isPhrase: true });
+                if (lookup[phrase]) {
+                    result.push({
+                        original: phraseTokens.join(""),
+                        translated: matchCase(phraseTokens.join(""), lookup[phrase]),
+                        source: SRC.EXACT,
+                        isPhrase: true,
+                    });
                     i += len;
                     matched = true;
                     break;
                 }
             }
+            if (matched) continue;
 
-            if (!matched) {
-                // Single word lookup
-                const token = words[i];
-                if (/^\w+$/.test(token)) {
-                    const tr = translateToken(token, dict, isReversed);
-                    result.push(tr);
+            const token = words[i];
+            if (/^\w+$/.test(token)) {
+                if (isReversed) {
+                    const hit = reverseDict[token.toLowerCase()];
+                    result.push(hit
+                        ? { original: token, translated: matchCase(token, hit), source: SRC.EXACT }
+                        : { original: token, translated: token, source: SRC.MISS }
+                    );
                 } else {
-                    result.push({ original: token, translated: token, found: true, isPunct: true });
+                    const hit = lookupWord(token, dict);
+                    result.push(hit
+                        ? { original: token, translated: matchCase(token, hit.translated), source: hit.source, via: hit.via }
+                        : { original: token, translated: token, source: SRC.MISS }
+                    );
                 }
-                i++;
+            } else {
+                result.push({ original: token, translated: token, source: SRC.PUNCT });
             }
+            i++;
         }
 
         return result;
     }
 
     // ============================================
-    // UI CONTROLLER
+    // LAYER 3: GEMINI GRAMMAR REORDERING
     // ============================================
+
+    function getGeminiKey() {
+        return localStorage.getItem(GEMINI_KEY) || "";
+    }
+
+    function updateAiStatus() {
+        const key = getGeminiKey();
+        if (key) {
+            aiStatus.textContent = "API key saved";
+            aiStatus.className = "ai-status ai-status--ok";
+            aiKeyInput.value = "••••••••••••••••";
+            aiGrammarBtn.disabled = false;
+        } else {
+            aiStatus.textContent = "No API key — grammar layer inactive";
+            aiStatus.className = "ai-status ai-status--off";
+            aiKeyInput.value = "";
+            aiGrammarBtn.disabled = true;
+        }
+    }
+
+    async function applyGrammarLayer(results, langId) {
+        const key = getGeminiKey();
+        if (!key) return;
+
+        const profile = GRAMMAR[langId];
+        if (!profile) return;
+
+        const lang = getLanguage(langId);
+        if (!lang) return;
+
+        // Build a readable summary of what was translated
+        const translatedPairs = results
+            .filter(r => r.source !== SRC.SPACE && r.source !== SRC.PUNCT && r.source !== SRC.MISS)
+            .map(r => `"${r.original}" → "${r.translated}"`)
+            .join(", ");
+
+        const missingWords = results
+            .filter(r => r.source === SRC.MISS)
+            .map(r => r.original)
+            .join(", ");
+
+        const originalText = results.map(r => r.original).join("");
+        const rawTranslation = results
+            .filter(r => r.source !== SRC.SPACE && r.source !== SRC.PUNCT)
+            .map(r => r.translated)
+            .join(" ");
+
+        const prompt = `You are a grammar assistant for the constructed language "${lang.name}".
+
+Grammar rule: ${profile.note}
+
+The user typed: "${originalText}"
+Word-by-word translation produced: ${translatedPairs || "(none)"}
+${missingWords ? `Words not in dictionary (kept as English): ${missingWords}` : ""}
+Raw word-by-word output: "${rawTranslation}"
+
+Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} word order. Keep untranslated English words in a natural position. Do not invent new words. Do not add grammar particles that are not in the word list. Output the final reordered sentence only — no explanation.`;
+
+        aiGrammarBtn.textContent = "Reordering…";
+        aiGrammarBtn.disabled = true;
+
+        try {
+            const res = await fetch(`${GEMINI_URL}?key=${key}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.1, maxOutputTokens: 200 }
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err?.error?.message || `HTTP ${res.status}`);
+            }
+
+            const data = await res.json();
+            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            if (text) {
+                aiGrammarArea.style.display = "";
+                aiGrammarOut.textContent = text;
+            }
+        } catch (e) {
+            aiGrammarArea.style.display = "";
+            aiGrammarOut.textContent = `Error: ${e.message}`;
+        } finally {
+            aiGrammarBtn.textContent = "Apply Grammar (Gemini)";
+            aiGrammarBtn.disabled = false;
+        }
+    }
+
+    // ============================================
+    // RENDER
+    // ============================================
+
+    function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
     function renderLanguageSelector() {
         langSelector.innerHTML = "";
-        
-        // Define default icons
-        const icons = {
-            "klingon": "🖖", "sindarin": "🧝", "dovahzul": "🐉",
-            "dothraki": "🐎", "valyrian": "🔥"
-        };
-
+        const icons = { klingon: "🖖", sindarin: "🧝", dovahzul: "🐉", dothraki: "🐎", valyrian: "🔥" };
         for (const [id, lang] of Object.entries(appLanguages)) {
-            const icon = icons[id] || "📘";
-            const universe = lang.universe || "Custom";
-            
             const btn = document.createElement("button");
-            btn.className = `lang-card ${id === activeLanguageId ? 'active' : ''}`;
+            btn.className = `lang-card ${id === activeLanguageId ? "active" : ""}`;
             btn.dataset.lang = id;
             btn.innerHTML = `
-                <span class="lang-card__icon">${icon}</span>
+                <span class="lang-card__icon">${icons[id] || "📘"}</span>
                 <div class="lang-card__body">
                     <div class="lang-card__name">${escapeHtml(lang.name)}</div>
-                    <div class="lang-card__universe">${escapeHtml(universe)}</div>
-                </div>
-            `;
-            
+                    <div class="lang-card__universe">${escapeHtml(lang.universe || "Custom")}</div>
+                </div>`;
             btn.addEventListener("click", () => selectLanguage(id));
             langSelector.appendChild(btn);
         }
@@ -249,178 +367,148 @@
         const lang = getLanguage(id);
         if (!lang) return;
 
-        // Update cards
-        const cards = langSelector.querySelectorAll(".lang-card");
-        cards.forEach(card => card.classList.toggle("active", card.dataset.lang === id));
+        langSelector.querySelectorAll(".lang-card").forEach(c =>
+            c.classList.toggle("active", c.dataset.lang === id)
+        );
+        langTitle.textContent   = lang.name;
+        langNative.textContent  = lang.nativeName || lang.name;
+        langDesc.textContent    = lang.desc || "";
+        langUniverse.textContent = lang.universe || "";
 
-        // Update info
-        langTitle.textContent = lang.name;
-        langNative.textContent = lang.nativeName;
-        langDesc.textContent = lang.desc;
-        langUniverse.textContent = lang.universe;
-
-        // Build reverse dictionary
         reverseDict = buildReverseDict(lang.dict);
-
-        // Update dictionary browser
         renderDictionary();
-
-        // Re-translate if there's input
-        if (inputArea.value.trim()) {
-            translate();
-        }
-
+        if (inputArea.value.trim()) translate();
         updateDirectionLabel();
+        updateGrammarNote(id);
+        aiGrammarArea.style.display = "none";
     }
 
     function updateDirectionLabel() {
         const lang = getLanguage(activeLanguageId);
         if (!lang) return;
-
-        if (isReversed) {
-            dirLabel.textContent = `${lang.name} → English`;
-        } else {
-            dirLabel.textContent = `English → ${lang.name}`;
-        }
+        dirLabel.textContent = isReversed
+            ? `${lang.name} → English`
+            : `English → ${lang.name}`;
     }
+
+    function updateGrammarNote(id) {
+        const profile = GRAMMAR[id];
+        grammarNote.textContent = profile
+            ? `Word order: ${profile.order} — ${profile.note}`
+            : "No grammar profile for this language yet.";
+    }
+
+    let lastResults = null;
 
     function translate() {
         const lang = getLanguage(activeLanguageId);
         if (!lang) return;
-
         const text = inputArea.value.trim();
         if (!text) {
             outputArea.innerHTML = '<span class="output-placeholder">Translation will appear here…</span>';
-            updateStats(0, 0, 0);
+            updateStats(0, 0, 0, 0, 0);
             return;
         }
 
         const results = translateText(text, lang.dict);
+        lastResults = results;
+        aiGrammarArea.style.display = "none";
 
-        // Render output
         let html = "";
-        let totalWords = 0;
-        let translatedWords = 0;
-        let missingWords = 0;
+        let total = 0, exact = 0, lemmaCount = 0, synonymCount = 0, missing = 0;
 
         for (const r of results) {
-            if (r.isSpace || r.isPunct) {
+            if (r.source === SRC.SPACE || r.source === SRC.PUNCT) {
                 html += `<span class="trans-punct">${escapeHtml(r.translated)}</span>`;
                 continue;
             }
-
-            totalWords++;
-            if (r.found) {
-                translatedWords++;
-                html += `<span class="trans-word trans-found" title="${escapeHtml(r.original)}">${escapeHtml(r.translated)}</span>`;
+            total++;
+            if (r.source === SRC.EXACT) {
+                exact++;
+                html += `<span class="trans-word trans-found trans-exact" title="${escapeHtml(r.original)}">${escapeHtml(r.translated)}</span>`;
+            } else if (r.source === SRC.LEMMA) {
+                lemmaCount++;
+                html += `<span class="trans-word trans-found trans-lemma" title="Via lemma: ${escapeHtml(r.original)} → ${escapeHtml(r.via)}">${escapeHtml(r.translated)}</span>`;
+            } else if (r.source === SRC.SYNONYM) {
+                synonymCount++;
+                html += `<span class="trans-word trans-found trans-synonym" title="Via synonym: ${escapeHtml(r.original)} ≈ ${escapeHtml(r.via)}">${escapeHtml(r.translated)}</span>`;
             } else {
-                missingWords++;
+                missing++;
                 html += `<span class="trans-word trans-missing" title="Not in dictionary">${escapeHtml(r.translated)}</span>`;
             }
         }
 
         outputArea.innerHTML = html;
-        updateStats(totalWords, translatedWords, missingWords);
+        updateStats(total, exact, lemmaCount, synonymCount, missing);
     }
 
-    function updateStats(total, translated, missing) {
-        statsTotal.textContent = total;
-        statsTranslated.textContent = translated;
-        statsMissing.textContent = missing;
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
+    function updateStats(total, exact, lemma, synonym, missing) {
+        statsTotal.textContent      = total;
+        statsTranslated.textContent = exact + lemma + synonym;
+        statsMissing.textContent    = missing;
+        statsLemma.textContent      = lemma;
+        statsSynonym.textContent    = synonym;
     }
 
     function renderDictionary(filter) {
         const lang = getLanguage(activeLanguageId);
         if (!lang) return;
-
         const entries = Object.entries(lang.dict);
         const filtered = filter
-            ? entries.filter(([eng, trans]) =>
-                eng.includes(filter.toLowerCase()) || trans.toLowerCase().includes(filter.toLowerCase())
-            )
+            ? entries.filter(([e, t]) => e.includes(filter.toLowerCase()) || t.toLowerCase().includes(filter.toLowerCase()))
             : entries;
-
-        // Sort alphabetically by English
         filtered.sort((a, b) => a[0].localeCompare(b[0]));
-
         dictCount.textContent = `${filtered.length} of ${entries.length} entries`;
-
         dictList.innerHTML = "";
         for (const [eng, trans] of filtered) {
             const row = document.createElement("div");
             row.className = "dict-row";
             row.innerHTML = `<span class="dict-eng">${escapeHtml(eng)}</span><span class="dict-arrow">→</span><span class="dict-trans">${escapeHtml(trans)}</span>`;
-
-            // Click to insert word into input
             row.addEventListener("click", () => {
                 const word = isReversed ? trans : eng;
                 inputArea.value += (inputArea.value ? " " : "") + word;
                 inputArea.focus();
             });
-
             dictList.appendChild(row);
         }
     }
 
     // ============================================
-    // DICTIONARY MANAGER ACTIONS
+    // DICTIONARY MANAGER
     // ============================================
-    
-    function togglePanel(panelId) {
-        const panels = [panelAddWord, panelAddLang, panelImport];
-        panels.forEach(p => {
-            if (p.id === panelId) p.classList.toggle("hidden");
-            else p.classList.add("hidden");
+
+    function togglePanel(id) {
+        const target = document.getElementById(id);
+        [panelAddWord, panelAddLang, panelImport].forEach(p => {
+            if (p !== target) p.classList.add("hidden");
         });
+        target.classList.toggle("hidden");
     }
 
     function addCustomWord() {
         const eng = inputWordEng.value.trim().toLowerCase();
         const trans = inputWordTrans.value.trim();
-        
-        if (!eng || !trans) return alert("Please fill out both English and Translation fields.");
-        
+        if (!eng || !trans) return;
         const lang = getLanguage(activeLanguageId);
         if (!lang) return;
-
         lang.dict[eng] = trans;
         saveToStorage();
-        
-        // Refresh UI
         reverseDict = buildReverseDict(lang.dict);
         renderDictionary(dictSearch.value.trim());
         if (inputArea.value.trim()) translate();
-        
         inputWordEng.value = "";
         inputWordTrans.value = "";
         inputWordEng.focus();
     }
 
     function addCustomLanguage() {
-        let id = inputLangId.value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+        const id   = inputLangId.value.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
         const name = inputLangName.value.trim();
-        
-        if (!id || !name) return alert("Please provide an ID and Name.");
-        if (appLanguages[id]) return alert("A language with this ID already exists.");
-
-        appLanguages[id] = {
-            name: name,
-            nativeName: name,
-            universe: "Custom",
-            desc: "Custom language created by user.",
-            dict: {}
-        };
-        
+        if (!id || !name || appLanguages[id]) return;
+        appLanguages[id] = { name, nativeName: name, universe: "Custom", desc: "Custom language.", dict: {} };
         saveToStorage();
         renderLanguageSelector();
         selectLanguage(id);
-        
         inputLangId.value = "";
         inputLangName.value = "";
         panelAddLang.classList.add("hidden");
@@ -428,125 +516,102 @@
 
     function handleImport() {
         const data = inputImportData.value.trim();
-        if (!data) return alert("Please paste some JSON or CSV data.");
-        
+        if (!data) return;
         const lang = getLanguage(activeLanguageId);
         if (!lang) return;
-
         let added = 0;
-        
         try {
-            // First try JSON
             if (data.startsWith("{")) {
                 const parsed = JSON.parse(data);
-                for (const [k, v] of Object.entries(parsed)) {
-                    lang.dict[k.toLowerCase()] = String(v);
-                    added++;
-                }
+                for (const [k, v] of Object.entries(parsed)) { lang.dict[k.toLowerCase()] = String(v); added++; }
             } else {
-                // Try simple CSV "english,translation"
-                const lines = data.split('\n');
-                for (const line of lines) {
-                    const parts = line.split(',');
+                for (const line of data.split("\n")) {
+                    const parts = line.split(",");
                     if (parts.length >= 2) {
                         const eng = parts[0].trim().toLowerCase();
-                        const trans = parts.slice(1).join(',').trim();
-                        if (eng && trans) {
-                            lang.dict[eng] = trans;
-                            added++;
-                        }
+                        const trans = parts.slice(1).join(",").trim();
+                        if (eng && trans) { lang.dict[eng] = trans; added++; }
                     }
                 }
             }
-            
             if (added > 0) {
                 saveToStorage();
                 reverseDict = buildReverseDict(lang.dict);
                 renderDictionary(dictSearch.value.trim());
                 if (inputArea.value.trim()) translate();
-                alert(`Successfully added ${added} words to ${lang.name}!`);
                 inputImportData.value = "";
                 panelImport.classList.add("hidden");
-            } else {
-                alert("No valid words found to import. Check format.");
             }
-        } catch (e) {
-            alert("Error parsing data. Make sure it's valid JSON or CSV.");
-            console.error(e);
-        }
+        } catch (e) { console.error("Import error", e); }
     }
 
     function exportDictionary() {
         const lang = getLanguage(activeLanguageId);
         if (!lang) return;
-        
-        const dataStr = JSON.stringify(lang.dict, null, 2);
-        const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-        
-        const exportFileDefaultName = `${activeLanguageId}_dict.json`;
-        
-        const linkElement = document.createElement('a');
-        linkElement.setAttribute('href', dataUri);
-        linkElement.setAttribute('download', exportFileDefaultName);
-        linkElement.click();
+        const dataUri = "data:application/json;charset=utf-8," + encodeURIComponent(JSON.stringify(lang.dict, null, 2));
+        const a = document.createElement("a");
+        a.href = dataUri;
+        a.download = `${activeLanguageId}_dict.json`;
+        a.click();
     }
 
     // ============================================
-    // EVENT BINDINGS
+    // EVENTS
     // ============================================
 
-    // Dictionary Actions
-    btnToggleWord.addEventListener("click", () => togglePanel("panel-add-word"));
-    btnToggleLang.addEventListener("click", () => togglePanel("panel-add-lang"));
+    btnToggleWord.addEventListener("click",   () => togglePanel("panel-add-word"));
+    btnToggleLang.addEventListener("click",   () => togglePanel("panel-add-lang"));
     btnToggleImport.addEventListener("click", () => togglePanel("panel-import"));
     btnExport.addEventListener("click", exportDictionary);
-    
     btnSaveWord.addEventListener("click", addCustomWord);
     btnSaveLang.addEventListener("click", addCustomLanguage);
     btnSaveImport.addEventListener("click", handleImport);
+    inputWordTrans.addEventListener("keypress", e => { if (e.key === "Enter") addCustomWord(); });
 
-    // Enter key submits for add word
-    inputWordTrans.addEventListener("keypress", (e) => {
-        if (e.key === "Enter") addCustomWord();
-    });
+    inputArea.addEventListener("input", translate);
 
-    // Real-time translation on input
-    inputArea.addEventListener("input", () => {
-        translate();
-    });
-
-    // Direction toggle
     dirToggle.addEventListener("click", () => {
         isReversed = !isReversed;
         updateDirectionLabel();
         translate();
     });
 
-    // Clear
     clearBtn.addEventListener("click", () => {
         inputArea.value = "";
         outputArea.innerHTML = '<span class="output-placeholder">Translation will appear here…</span>';
-        updateStats(0, 0, 0);
+        updateStats(0, 0, 0, 0, 0);
+        aiGrammarArea.style.display = "none";
         inputArea.focus();
     });
 
-    // Copy
     copyBtn.addEventListener("click", () => {
         const text = outputArea.textContent;
         if (!text) return;
         navigator.clipboard.writeText(text).then(() => {
             copyLabel.textContent = "Copied!";
             copyBtn.classList.add("copied");
-            setTimeout(() => {
-                copyLabel.textContent = "Copy";
-                copyBtn.classList.remove("copied");
-            }, 1500);
+            setTimeout(() => { copyLabel.textContent = "Copy"; copyBtn.classList.remove("copied"); }, 1500);
         });
     });
 
-    // Dictionary search
-    dictSearch.addEventListener("input", () => {
-        renderDictionary(dictSearch.value.trim());
+    dictSearch.addEventListener("input", () => renderDictionary(dictSearch.value.trim()));
+
+    // AI settings
+    aiSaveBtn.addEventListener("click", () => {
+        const val = aiKeyInput.value.trim();
+        if (val && !val.startsWith("•")) {
+            localStorage.setItem(GEMINI_KEY, val);
+        }
+        updateAiStatus();
+    });
+
+    aiClearBtn.addEventListener("click", () => {
+        localStorage.removeItem(GEMINI_KEY);
+        updateAiStatus();
+    });
+
+    aiGrammarBtn.addEventListener("click", () => {
+        if (lastResults) applyGrammarLayer(lastResults, activeLanguageId);
     });
 
     // ============================================
@@ -556,5 +621,6 @@
     loadLanguages();
     renderLanguageSelector();
     selectLanguage(Object.keys(appLanguages)[0] || "klingon");
+    updateAiStatus();
     inputArea.focus();
 })();
