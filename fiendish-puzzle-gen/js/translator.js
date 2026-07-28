@@ -60,6 +60,9 @@
     const statsMissing  = document.getElementById("stats-missing");
     const statsLemma    = document.getElementById("stats-lemma");
     const statsSynonym  = document.getElementById("stats-synonym");
+    const statsCoined   = document.getElementById("stats-coined");
+    const toggleNonCanon = document.getElementById("toggle-noncanon");
+    const nonCanonLabel  = document.getElementById("noncanon-label");
 
     // Manager
     const btnToggleWord   = document.getElementById("btn-toggle-word");
@@ -142,7 +145,13 @@
     // ============================================
 
     // Source tags for UI colouring
-    const SRC = { EXACT: "exact", LEMMA: "lemma", SYNONYM: "synonym", MISS: "miss", SPACE: "space", PUNCT: "punct" };
+    const SRC = { EXACT: "exact", LEMMA: "lemma", SYNONYM: "synonym", COINED: "coined", MISS: "miss", SPACE: "space", PUNCT: "punct" };
+
+    // A "word" is letters/marks/digits plus the apostrophes used by these
+    // languages (Klingon ’, ʼ, '). Unicode-aware so accented (Sindarin í, â)
+    // and apostrophe-bearing (Klingon ’) target words are still recognised as
+    // words in reverse mode — \w alone is ASCII and silently drops them.
+    const WORD_RE = /^[\p{L}\p{M}\p{N}_’ʼ']+$/u;
 
     function lookupWord(token, dict) {
         const lower = token.toLowerCase();
@@ -173,6 +182,14 @@
                     }
                 }
             }
+        }
+
+        // L4: coinage — fill the gap with an algorithm-invented (non-canon)
+        // word, only if the user has enabled the coined layer. Deterministic
+        // and pinned, so the same concept always yields the same word.
+        if (window.FPG_CoinLib && FPG_CoinLib.isEnabled()) {
+            const minted = FPG_CoinLib.mint(lower, activeLanguageId);
+            if (minted) return { translated: minted.word, source: SRC.COINED, via: lower };
         }
 
         return null;
@@ -217,13 +234,21 @@
             if (matched) continue;
 
             const token = words[i];
-            if (/^\w+$/.test(token)) {
+            if (WORD_RE.test(token)) {
                 if (isReversed) {
                     const hit = reverseDict[token.toLowerCase()];
-                    result.push(hit
-                        ? { original: token, translated: matchCase(token, hit), source: SRC.EXACT }
-                        : { original: token, translated: token, source: SRC.MISS }
-                    );
+                    if (hit) {
+                        result.push({ original: token, translated: matchCase(token, hit), source: SRC.EXACT });
+                    } else {
+                        // Reverse a coined word back to its English concept, so
+                        // the translator can undo its own inventions.
+                        const coined = (window.FPG_CoinLib && FPG_CoinLib.isEnabled())
+                            ? FPG_CoinLib.lookupReverse(token, activeLanguageId) : null;
+                        result.push(coined
+                            ? { original: token, translated: matchCase(token, coined), source: SRC.COINED, via: token }
+                            : { original: token, translated: token, source: SRC.MISS }
+                        );
+                    }
                 } else {
                     const hit = lookupWord(token, dict);
                     result.push(hit
@@ -406,7 +431,7 @@ Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} 
         const text = inputArea.value.trim();
         if (!text) {
             outputArea.innerHTML = '<span class="output-placeholder">Translation will appear here…</span>';
-            updateStats(0, 0, 0, 0, 0);
+            updateStats(0, 0, 0, 0, 0, 0);
             return;
         }
 
@@ -414,8 +439,9 @@ Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} 
         lastResults = results;
         aiGrammarArea.style.display = "none";
 
+        const langName = lang.name;
         let html = "";
-        let total = 0, exact = 0, lemmaCount = 0, synonymCount = 0, missing = 0;
+        let total = 0, exact = 0, lemmaCount = 0, synonymCount = 0, coinedCount = 0, missing = 0;
 
         for (const r of results) {
             if (r.source === SRC.SPACE || r.source === SRC.PUNCT) {
@@ -432,6 +458,12 @@ Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} 
             } else if (r.source === SRC.SYNONYM) {
                 synonymCount++;
                 html += `<span class="trans-word trans-found trans-synonym" title="Via synonym: ${escapeHtml(r.original)} ≈ ${escapeHtml(r.via)}">${escapeHtml(r.translated)}</span>`;
+            } else if (r.source === SRC.COINED) {
+                coinedCount++;
+                const label = isReversed
+                    ? `Coined word decoded: "${escapeHtml(r.via)}" → "${escapeHtml(r.translated)}"`
+                    : `Coined (non-canonical) for "${escapeHtml(r.via)}" — invented by the algorithm, not part of ${escapeHtml(langName)}`;
+                html += `<span class="trans-word trans-coined" title="${label}">${escapeHtml(r.translated)}<sup class="coined-mark">✳</sup></span>`;
             } else {
                 missing++;
                 html += `<span class="trans-word trans-missing" title="Not in dictionary">${escapeHtml(r.translated)}</span>`;
@@ -439,15 +471,16 @@ Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} 
         }
 
         outputArea.innerHTML = html;
-        updateStats(total, exact, lemmaCount, synonymCount, missing);
+        updateStats(total, exact, lemmaCount, synonymCount, coinedCount, missing);
     }
 
-    function updateStats(total, exact, lemma, synonym, missing) {
+    function updateStats(total, exact, lemma, synonym, coined, missing) {
         statsTotal.textContent      = total;
-        statsTranslated.textContent = exact + lemma + synonym;
+        statsTranslated.textContent = exact + lemma + synonym + coined;
         statsMissing.textContent    = missing;
         statsLemma.textContent      = lemma;
         statsSynonym.textContent    = synonym;
+        if (statsCoined) statsCoined.textContent = coined;
     }
 
     function renderDictionary(filter) {
@@ -576,6 +609,24 @@ Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} 
         translate();
     });
 
+    // Non-canon (coined) layer toggle
+    function updateNonCanonToggle() {
+        if (!toggleNonCanon) return;
+        const on = !!(window.FPG_CoinLib && FPG_CoinLib.isEnabled());
+        toggleNonCanon.classList.toggle("is-active", on);
+        toggleNonCanon.setAttribute("aria-pressed", on ? "true" : "false");
+        if (nonCanonLabel) nonCanonLabel.textContent = on ? "Coined words: On" : "Coined words: Off";
+    }
+
+    if (toggleNonCanon) {
+        toggleNonCanon.addEventListener("click", () => {
+            if (!window.FPG_CoinLib) return;
+            FPG_CoinLib.setEnabled(!FPG_CoinLib.isEnabled());
+            updateNonCanonToggle();
+            translate();
+        });
+    }
+
     clearBtn.addEventListener("click", () => {
         inputArea.value = "";
         outputArea.innerHTML = '<span class="output-placeholder">Translation will appear here…</span>';
@@ -622,5 +673,6 @@ Task: Reorder ONLY the translated ${lang.name} words to follow ${profile.order} 
     renderLanguageSelector();
     selectLanguage(Object.keys(appLanguages)[0] || "klingon");
     updateAiStatus();
+    updateNonCanonToggle();
     inputArea.focus();
 })();

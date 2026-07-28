@@ -220,6 +220,30 @@
     text-underline-offset: 3px;
 }
 
+/* Coined (non-canonical) words — distinct teal signals "algorithm-invented,
+   not part of the original language". Always flagged with a superscript mark. */
+.trans-coined {
+    color: var(--accent-coined);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: rgba(45, 212, 191, 0.5);
+    text-underline-offset: 3px;
+    cursor: help;
+}
+
+.trans-coined:hover {
+    background: rgba(45, 212, 191, 0.12);
+}
+
+.coined-mark {
+    font-size: 0.6em;
+    color: var(--accent-coined);
+    margin-left: 1px;
+    opacity: 0.85;
+    user-select: none;
+}
+
 .trans-punct {
     color: var(--text-secondary);
 }
@@ -258,6 +282,15 @@
 
 .trans-dir-btn:hover svg {
     transform: rotate(180deg);
+}
+
+/* Coined-layer toggle: reuses the dir-btn shell, teal when active */
+#toggle-noncanon:hover { border-color: var(--accent-coined); color: var(--accent-coined); }
+#toggle-noncanon:hover svg { transform: none; }   /* the star must not spin */
+.trans-dir-btn.is-active {
+    border-color: var(--accent-coined);
+    color: var(--accent-coined);
+    background: rgba(45, 212, 191, 0.10);
 }
 
 /* ---- Action Buttons ---- */
@@ -304,6 +337,7 @@
 .stat-item--translated .stat-value { color: var(--accent-success); }
 .stat-item--lemma .stat-value    { color: var(--accent-secondary); }
 .stat-item--synonym .stat-value  { color: #f59e0b; }
+.stat-item--coined .stat-value   { color: var(--accent-coined); }
 .stat-item--missing .stat-value  { color: var(--accent-tertiary); }
 
 /* ---- Word source colouring ---- */

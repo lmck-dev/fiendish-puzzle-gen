@@ -98,6 +98,12 @@
                     </svg>
                     <span id="trans-dir-label">English → Klingon</span>
                 </button>
+                <button class="trans-dir-btn" id="toggle-noncanon" aria-pressed="false" title="Fill gaps with algorithm-coined words. Coinages are flagged ✳, kept separate from the canon lexicon, and stored only in your browser.">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <path d="M8 2l1.6 3.6L13 7l-3.4 1.4L8 12l-1.6-3.6L3 7l3.4-1.4L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                    </svg>
+                    <span id="noncanon-label">Coined words: Off</span>
+                </button>
                 <button class="btn btn-ghost" id="clear-trans-btn">Clear</button>
             </div>
 
@@ -151,6 +157,10 @@
                 <div class="stat-item stat-item--synonym">
                     <span class="stat-label">Via Synonym</span>
                     <span class="stat-value" id="stats-synonym">0</span>
+                </div>
+                <div class="stat-item stat-item--coined">
+                    <span class="stat-label">Coined ✳</span>
+                    <span class="stat-value" id="stats-coined">0</span>
                 </div>
                 <div class="stat-item stat-item--missing">
                     <span class="stat-label">Not Found</span>
@@ -253,6 +263,8 @@
     <script src="js/dictionaries.js"></script>
     <script src="js/lemmatizer.js"></script>
     <script src="js/synonyms.js"></script>
+    <script src="js/coiner.js"></script>
+    <script src="js/coinlib.js"></script>
     <script src="js/translator.js"></script>
 </body>
 </html>

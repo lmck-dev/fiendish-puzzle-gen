@@ -24,6 +24,8 @@
     --accent-tertiary: #f59e0b;
     --accent-success: #10b981;
     --accent-success-dim: rgba(16, 185, 129, 0.15);
+    --accent-coined: #2dd4bf;
+    --accent-coined-dim: rgba(45, 212, 191, 0.15);
 
     /* Gradients */
     --gradient-fiendish: linear-gradient(135deg, #e63946, #8b5cf6);
