@@ -1,0 +1,608 @@
+/* =============================================
+   Fiendish Puzzle Gen — Puzzle Chainer Styles
+   ============================================= */
+
+/* ---- Layout ---- */
+
+.ch-layout {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+}
+
+/* ---- Input Area ---- */
+
+.input-area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+}
+
+/* ---- Controls Panel (reuses .controls-panel from main.css) ---- */
+
+.controls-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.form-textarea {
+    width: 100%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 10px 14px;
+    resize: vertical;
+    transition: border-color var(--duration-normal) var(--ease-out);
+    line-height: 1.6;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+}
+
+.form-textarea::placeholder {
+    color: var(--text-muted);
+    font-family: var(--font-sans);
+    font-style: italic;
+}
+
+.input-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+    line-height: 1.5;
+}
+
+/* ---- Step Builder ---- */
+
+.step-builder {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+}
+
+.step-builder-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+}
+
+.step-count-badge {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+}
+
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.step-empty {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    padding: var(--space-lg) 0;
+}
+
+/* ---- Step Item ---- */
+
+.step-item {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    margin-bottom: 0;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.step-badge {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent-primary-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+}
+
+.step-type-select {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+}
+
+.step-remove-btn {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.step-remove-btn:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+.step-desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding-left: 34px;
+}
+
+.step-opts {
+    padding-left: 34px;
+}
+
+.step-opt-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.step-opt-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.step-opt-note {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ---- Range Slider ---- */
+.form-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-default);
+    border-radius: 3px;
+    outline: none;
+    margin-top: var(--space-sm);
+}
+
+.form-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+    transition: box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    box-shadow: 0 2px 12px rgba(230, 57, 70, 0.5);
+}
+
+.form-range::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent-primary);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(230, 57, 70, 0.3);
+}
+
+.step-opts .form-input {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+.step-opts .form-select {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+/* ---- Step Connector ---- */
+
+.step-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2px 0;
+    gap: 0;
+}
+
+.step-conn-line {
+    width: 1px;
+    height: 10px;
+    background: var(--border-default);
+}
+
+.step-conn-arrow {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1;
+}
+
+/* ---- Add Step Button ---- */
+
+.btn-add-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    padding: 9px var(--space-md);
+    background: transparent;
+    border: 1px dashed var(--border-default);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-out);
+}
+
+.btn-add-step:hover {
+    border-color: var(--accent-primary);
+    color: var(--accent-primary);
+    background: var(--accent-primary-dim);
+}
+
+/* ---- Action Buttons ---- */
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding-top: var(--space-sm);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.action-buttons .btn {
+    width: 100%;
+    justify-content: center;
+}
+
+/* ---- Chain Output Section ---- */
+
+.chain-output-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xl);
+}
+
+/* ---- Chain Preview (on-screen) ---- */
+
+.chain-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+}
+
+.chain-node {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.chain-node--input {
+    border-color: var(--border-default);
+}
+
+.chain-node--final {
+    border-color: var(--accent-primary);
+    background: linear-gradient(135deg, rgba(230,57,70,0.08) 0%, var(--bg-card) 60%);
+    box-shadow: 0 0 24px rgba(230, 57, 70, 0.1);
+}
+
+.chain-node-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-sm);
+}
+
+.chain-node--final .chain-node-label {
+    color: var(--accent-primary);
+}
+
+.chain-node-text {
+    font-family: var(--font-mono);
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: 0.08em;
+    word-break: break-all;
+    line-height: 1.6;
+}
+
+.chain-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: var(--space-md);
+    padding: 5px 12px;
+    background: var(--accent-primary-dim);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-sm);
+    color: var(--accent-primary);
+    font-size: 0.78rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all var(--duration-fast);
+}
+
+.chain-copy-btn:hover {
+    background: rgba(230, 57, 70, 0.25);
+}
+
+/* ---- Chain Arrow ---- */
+
+.chain-arrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm) var(--space-lg);
+}
+
+.chain-arrow-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    gap: 1px;
+}
+
+.chain-arrow-dash {
+    width: 1px;
+    height: 14px;
+    background: var(--border-default);
+}
+
+.chain-arrow-head {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1;
+}
+
+.chain-arrow-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--accent-secondary);
+    font-family: var(--font-mono);
+    background: var(--accent-secondary-dim);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 20px;
+    padding: 3px 12px;
+}
+
+/* ---- Print Styles ---- */
+
+.print-sheet,
+.print-answer-key {
+    display: none;
+}
+
+@media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+    body { background: #fff; color: #111; }
+
+    .bg-pattern, .no-print { display: none !important; }
+
+    .app-container { max-width: 100%; padding: 0; }
+
+    .ch-layout { grid-template-columns: 1fr; }
+
+    .chain-output-section { display: block !important; }
+
+    .chain-preview { display: none; }
+
+    .print-sheet { display: block; }
+
+    .print-answer-key {
+        display: block;
+        page-break-before: always;
+    }
+
+    .print-title {
+        font-family: var(--font-display), serif;
+        font-size: 2rem;
+        text-align: center;
+        color: #111;
+        margin-bottom: 1.5rem;
+    }
+
+    .print-start-block {
+        border: 2px solid #111;
+        border-radius: 8px;
+        padding: 20px 24px;
+        margin-bottom: 28px;
+        text-align: center;
+    }
+
+    .print-start-label {
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .print-start-text {
+        font-family: monospace;
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        word-break: break-all;
+    }
+
+    .print-step {
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        padding: 16px 20px;
+        margin-bottom: 16px;
+        break-inside: avoid;
+    }
+
+    .print-step-hd {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 10px;
+    }
+
+    .print-step-num {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #111;
+        border-radius: 6px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-shrink: 0;
+    }
+
+    .print-step-name {
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .print-step-instr {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: #333;
+        margin-bottom: 12px;
+    }
+
+    .print-answer-row {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+    }
+
+    .print-answer-label {
+        font-size: 0.85rem;
+        color: #555;
+        white-space: nowrap;
+    }
+
+    .print-answer-line {
+        flex: 1;
+        border-bottom: 1.5px solid #999;
+        height: 20px;
+    }
+
+    .print-final-msg {
+        margin-top: 10px;
+        font-size: 0.8rem;
+        font-style: italic;
+        color: #555;
+        text-align: right;
+    }
+
+    /* Answer Key */
+    .print-ak-title {
+        font-family: monospace;
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-bottom: 2px solid #111;
+        padding-bottom: 8px;
+        margin-bottom: 16px;
+    }
+
+    .print-ak-row {
+        display: flex;
+        gap: 12px;
+        font-size: 0.85rem;
+        padding: 5px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    .print-ak-row--final {
+        border-top: 2px solid #111;
+        border-bottom: none;
+        padding-top: 10px;
+        margin-top: 6px;
+        font-weight: 700;
+    }
+
+    .print-ak-lbl {
+        color: #555;
+        flex-shrink: 0;
+        min-width: 200px;
+    }
+
+    .print-ak-val {
+        font-family: monospace;
+        font-weight: 600;
+        word-break: break-all;
+    }
+
+    .mono { font-family: monospace; }
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 960px) {
+    .ch-layout {
+        grid-template-columns: 1fr;
+    }
+}
