@@ -1,0 +1,17 @@
+# Local Netlify folder
+.netlify
+
+# Reference scans for the Thieves' Cant lexicon (~73 MB of JPEGs).
+# The vocabulary these were transcribed into lives in ~/Documents/languages/
+# as thieves_cant.json / old_thieves_cant_en.json, so the images are source
+# material rather than build input. Committing them would bloat every future
+# clone permanently.
+Thieves-Cant/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+node_modules/
